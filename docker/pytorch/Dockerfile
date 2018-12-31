@@ -1,4 +1,7 @@
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+# Adds metadata to the image as a key value pair example LABEL version="1.0"
+LABEL maintainer="Beau <cbeauhilton@gmail.com>"
+
 ARG PYTHON_VERSION=3.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
          build-essential \
@@ -6,10 +9,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          git \
          curl \
          vim \
-         ca-certificates \
          libjpeg-dev \
+         wget \
+         bzip2 \
+         ca-certificates \
+         git-core \
+         htop \
+         pkg-config \
+         unzip \
+         unrar \
+         tree \
+         freetds-dev \
          libpng-dev &&\
-     rm -rf /var/lib/apt/lists/*
+     apt-get clean && rm -rf /var/lib/apt/lists/*
      
 # Install OpenSlide
 RUN apt-get install -y openslide-tools
@@ -23,6 +35,7 @@ RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-la
      /opt/conda/bin/conda config --add channels conda-forge && \
      /opt/conda/bin/conda install -y python=$PYTHON_VERSION numpy pyyaml scipy mkl mkl-include cython jupyter shap opencv openslide-python && \
      /opt/conda/bin/conda install -y -c pytorch magma-cuda90 && \
+     /opt/conda/bin/conda update conda -y --all && \
      /opt/conda/bin/conda clean -ya
 ENV PATH /opt/conda/bin:$PATH
 # This must be done before pip so that requirements.txt is available
