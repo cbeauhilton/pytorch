@@ -38,19 +38,27 @@ RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-la
      /opt/conda/bin/conda config --add channels conda-forge && \
      /opt/conda/bin/conda install -y python=$PYTHON_VERSION numpy \
      pyyaml \
-     scipy \
+     scipy \ 
+     lmdb \
+     h5py \
      mkl \
      mkl-include \
      cython \
      jupyter \
      shap \
      opencv \
+     shapely \
      openslide-python && \
      /opt/conda/bin/conda install -y -c pytorch magma-cuda90 && \
+     /opt/conda/bin/conda update conda && \
      /opt/conda/bin/conda update conda -y --all && \
      /opt/conda/bin/conda clean -ya
+
+# Set path to conda
 ENV PATH /opt/conda/bin:$PATH
+
 # This must be done before pip so that requirements.txt is available
+
 WORKDIR /opt/pytorch
 COPY . .
 
@@ -60,6 +68,13 @@ RUN TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX" TORCH_NVCC_FLAGS="-Xfatbin -c
     pip install -v .
 
 RUN git clone https://github.com/pytorch/vision.git && cd vision && pip install -v .
+
+# Install Jupyter theme
+RUN pip install msgpack jupyterthemes
+RUN jt -t grade3
+
+# Install py-wsi from Github 
+RUN git clone https://github.com/ysbecca/py-wsi.git
 
 WORKDIR /workspace
 RUN chmod -R a+w /workspace
