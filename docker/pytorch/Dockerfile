@@ -1,8 +1,11 @@
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+
+
 # Adds metadata to the image as a key value pair example LABEL version="1.0"
 LABEL maintainer="Beau <cbeauhilton@gmail.com>"
 
 ARG PYTHON_VERSION=3.6
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
          build-essential \
          cmake \
@@ -33,7 +36,16 @@ RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-la
      /opt/conda/bin/conda config --add channels defaults && \
      /opt/conda/bin/conda config --add channels bioconda && \
      /opt/conda/bin/conda config --add channels conda-forge && \
-     /opt/conda/bin/conda install -y python=$PYTHON_VERSION numpy pyyaml scipy mkl mkl-include cython jupyter shap opencv openslide-python && \
+     /opt/conda/bin/conda install -y python=$PYTHON_VERSION numpy \
+     pyyaml \
+     scipy \
+     mkl \
+     mkl-include \
+     cython \
+     jupyter \
+     shap \
+     opencv \
+     openslide-python && \
      /opt/conda/bin/conda install -y -c pytorch magma-cuda90 && \
      /opt/conda/bin/conda update conda -y --all && \
      /opt/conda/bin/conda clean -ya
